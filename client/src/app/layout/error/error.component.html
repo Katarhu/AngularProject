@@ -1,0 +1,14 @@
+<div
+  *ngIf="errorService.error"
+  class="error"
+>
+  <p class="error__message">
+    {{errorService.error}}
+  </p>
+  <button
+    class="error__button"
+    (click)="clearError()"
+  >
+    &#x2715;
+  </button>
+</div>

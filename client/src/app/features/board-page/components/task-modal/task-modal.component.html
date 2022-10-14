@@ -1,0 +1,40 @@
+<div class="screen"
+     (mousedown)="closeModal()"
+>
+  <div class="modal"
+       (mousedown)="modalClick($event)"
+  >
+    <h3 class="modal__title">Create task</h3>
+
+    <form
+      class="modal__form"
+      [formGroup]="modalForm"
+      (submit)="submitForm()"
+    >
+
+      <fieldset class="modal__fieldset">
+        <label class="modal__label">Name: </label>
+        <input
+          formControlName="name"
+          class="modal__input"
+          type="text"
+          placeholder="Task name">
+      </fieldset>
+
+      <p
+        *ngIf="nameError && nameError['maxlength']"
+        class="modal__error"
+      >
+        Name should have less than 18 symbols
+      </p>
+
+      <button
+        class="modal__button"
+        type="submit"
+        [disabled]="!modalForm.valid">
+        Create
+      </button>
+    </form>
+
+  </div>
+</div>

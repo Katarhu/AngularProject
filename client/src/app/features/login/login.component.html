@@ -1,0 +1,35 @@
+<div class="login">
+  <form
+    class="form"
+    [formGroup]="loginForm"
+    (submit)="submitForm()"
+  >
+    <h2 class="form__title">Log in</h2>
+
+    <fieldset class="form__fieldset">
+      <label class="form__label">Username</label>
+      <input
+        formControlName="username"
+        class="form__input"
+        type="text"
+        placeholder="Username">
+    </fieldset>
+
+    <fieldset class="form__fieldset">
+      <label class="form__label">Password  <span class="form__show" (click)="changeFieldType(password)">(show)</span></label>
+      <input
+        #password
+        formControlName="password"
+        class="form__input"
+        type="password"
+        placeholder="Password">
+    </fieldset>
+
+    <button
+      class="form__button"
+      type="submit"
+      [disabled]="!loginForm.valid"
+    >Login</button>
+
+  </form>
+</div>

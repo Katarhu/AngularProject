@@ -1,0 +1,64 @@
+.header {
+  width: 100%;
+  font-size: 20px;
+  background: #D9D9D9;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+
+  height: 4em;
+  padding: 0.8em 1.2em;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header__logo {
+  font-size: 1.3em;
+  font-weight: 700;
+
+  & a {
+    color: #000000;
+  }
+}
+
+.header__nav {
+
+}
+
+.nav{
+  display: flex;
+}
+
+.nav__menu {
+  display: flex;
+  gap: 5px;
+}
+
+.nav__link {
+  color: #000000;
+
+  font-size: .7em;
+  font-weight: 600;
+
+  padding: 0.6em 1em;
+  background: #ffffff;
+
+  border-radius: 5px;
+}
+
+.header__button {
+  background: red;
+  color: #ffffff;
+
+  border-radius: 5px;
+  border: 1px solid #000000;
+
+  padding: 0.6em 1em;
+
+}
+
+.header__menu {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}

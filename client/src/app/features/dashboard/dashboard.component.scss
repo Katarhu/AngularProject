@@ -1,0 +1,25 @@
+.dashboard {
+  font-size: 20px;
+
+  //transform: perspective(500px);
+}
+
+.container {
+}
+
+.dashboard__container {
+  display: flex;
+  flex-direction: column;
+  gap: 35px;
+}
+
+.dashboard__boards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 250px);
+  grid-template-rows: repeat(auto-fill, 250px);
+
+  grid-auto-rows: 250px;
+
+  gap: 4em 4.1em;
+}
+

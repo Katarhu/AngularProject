@@ -1,0 +1,50 @@
+<div
+  *ngIf="board"
+  class="board"
+>
+  <div class="board__inner">
+    <div class="board__face">
+      <p class="board__name" >
+        {{board.name}}
+      </p>
+      <p class="board__description">
+        {{board.description | truncate: 105}}
+      </p>
+      <p class="board__date">
+        {{createdAt}}
+      </p>
+    </div>
+
+    <div class="board__bottom">
+      <p
+        class="board__name"
+        appTextEditable
+        [maxLength]="18"
+        (commitChangesEvent)="changeBoardName($event)">
+        {{board.name}}
+      </p>
+
+      <a
+        class="board__link"
+        [state]="{name: board.name, _id: board._id }"
+        [routerLink]="['/board', board._id ]"
+      >
+        <p
+          *ngFor="let list of board.lists"
+          class="board__lists"
+        >
+          {{list.name}}: {{list.tasks.length}}
+        </p>
+
+      </a>
+
+      <button
+        class="board__btn"
+        (click)="deleteBoard()"
+      >
+        Delete board
+      </button>
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,29 @@
+<div class="dashboard">
+  <app-board-modal
+    *ngIf="isAddBoard"
+    (closeModalEvent)="closeModal()"
+  ></app-board-modal>
+
+  <div class="container dashboard__container">
+    <app-controls-bar
+      [title]="'Dashboard'"
+    ></app-controls-bar>
+
+    <div
+      *ngIf="boardService.getBoards() | async | filterName: controlsBarService.filterWord | sort: controlsBarService.sortBy : controlsBarService.sortType as boards"
+      class="dashboard__boards"
+    >
+      <app-board-button
+        (click)="openModal()"
+      ></app-board-button>
+
+      <app-board
+        *ngFor="let board of boards"
+        [board]="board"
+      >
+      </app-board>
+
+    </div>
+  </div>
+
+</div>

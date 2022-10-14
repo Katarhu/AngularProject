@@ -1,0 +1,29 @@
+<header class="header">
+  <div class="header__logo">
+    <a [routerLink]="authService.isLogged ? '/dashboard' : '/'">Todo-Board</a>
+  </div>
+
+  <nav class="header__nav nav">
+    <div *ngIf="!isLogged">
+      <ul class="nav__menu">
+        <li><a class="nav__link" routerLink="/login">Login</a></li>
+        <li><a class="nav__link" routerLink="/register">Register</a></li>
+      </ul>
+    </div>
+
+    <div
+      *ngIf="isLogged"
+      class="header__menu"
+    >
+      <div class="header__welcome">
+        Hello, {{authService.user.username}}
+      </div>
+      <button
+        class="header__button"
+        (click)="logOut()"
+      >
+        Log Out
+      </button>
+    </div>
+  </nav>
+</header>

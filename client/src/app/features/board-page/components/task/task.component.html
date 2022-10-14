@@ -1,0 +1,25 @@
+<div
+  class="task" *ngIf="task"
+  #draggable
+  draggable="true"
+>
+  <div
+    class="task__name"
+    appTextEditable [maxLength]="18"
+    (commitChangesEvent)="changeTaskName($event)"
+  >
+    {{task.name}}
+  </div>
+  <div class="task__controls">
+    <button class="task__icon">
+      <span></span>
+    </button>
+    <div class="task__buttons">
+      <button class="task__button"
+              (click)="deleteTask()"
+      >
+        Delete
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,25 @@
+.home {
+  font-size: 20px;
+}
+
+.home__title {
+  font-size: 2em;
+  font-weight: bold;
+  margin: 0 0 25px 0;
+}
+
+.home__text {
+  font-size: 1em;
+
+  &:not(:last-of-type) {
+    margin: 0 0 20px 0;
+  }
+}
+
+
+.home__subtitle {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin: 0 0 25px 0;
+}
+

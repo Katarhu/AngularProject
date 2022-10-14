@@ -1,0 +1,19 @@
+<div class="board-page">
+  <div class="container board-page__container">
+    <app-controls-bar
+      [title]="title || 'Board'"
+    ></app-controls-bar>
+
+    <div
+      *ngIf="listService.getLists() | async as lists"
+      class="board-page__lists">
+
+      <app-list
+        *ngFor="let list of lists"
+        [list]="list"
+      ></app-list>
+
+    </div>
+  </div>
+
+</div>

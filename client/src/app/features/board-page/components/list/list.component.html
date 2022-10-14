@@ -1,0 +1,26 @@
+<app-task-modal
+  *ngIf="list && isAddTask"
+  [listId]="list._id"
+  [boardId]="list.boardId"
+  (closeModalEvent)="closeModal()"
+></app-task-modal>
+
+<div class="list" *ngIf="list">
+  <div class="list__title">
+    {{list.name}}
+  </div>
+  <div class="list__container">
+    <button class="list__button"
+      (click)="openModal()"
+    >
+      +
+    </button>
+
+    <app-task
+      *ngFor="let task of taskService.getTasks(list._id) | async | filterName: controlsBarService.filterWord | sort: controlsBarService.sortBy: controlsBarService.sortType"
+      [task]="task">
+
+    </app-task>
+
+  </div>
+</div>

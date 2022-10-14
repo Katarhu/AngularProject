@@ -1,0 +1,19 @@
+.board-page {
+  height: 100%;
+}
+
+.board-page__container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  gap: 35px;
+}
+
+.board-page__lists {
+  height: 100%;
+  display: flex;
+
+  justify-content: space-between;
+  gap: 50px;
+}

@@ -1,0 +1,50 @@
+.form {
+  width: 100%;
+  max-width: 375px;
+}
+
+.form__title {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin: 0 0 25px 0;
+  text-align: center;
+}
+
+.form__fieldset {
+  &:not(:last-child) {
+    margin: 0 0 15px 0;
+  }
+}
+
+.form__label {
+  display: block;
+  margin: 0 0 10px 0;
+}
+
+.form__input {
+  display: block;
+  width: 100%;
+
+  border: 1px solid #000000;
+  border-radius: 5px;
+
+  padding: 0.6em 0.8em;
+}
+
+.form__error {
+  margin: 0 0 10px 0;
+  font-size: 0.7em;
+  color: red;
+}
+
+.form__button {
+  width: 100%;
+  padding: 0.6em 0.8em;
+  border-radius: 5px;
+}
+
+
+.form__show {
+  cursor: pointer;
+  font-size: 0.5em;
+}
