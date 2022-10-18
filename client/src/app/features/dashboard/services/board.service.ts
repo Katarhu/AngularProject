@@ -6,6 +6,7 @@ import {
   IBoardWithLists,
   ICreateBoard
 } from "../../../shared/types/board.types";
+import {TaskService} from "../../board-page/services/task.service";
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +16,7 @@ export class BoardService {
   private boards$ = new BehaviorSubject<IBoardWithLists[]>([]);
 
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
   ) { }
 
   public init(): void {
@@ -23,7 +24,6 @@ export class BoardService {
     this.http
       .get<IBoardWithLists[]>('boards')
       .subscribe((boards) => {
-        console.log(boards);
         this.boards$.next(boards || [])
       })
   }
@@ -62,6 +62,8 @@ export class BoardService {
   }
 
   public deleteBoardTask(boardId: string, listId: string, taskId: string) {
+    if ( !this.boards$.value.length ) return;
+
     const boardToChange = this.boards$.value.find((board) => board._id === boardId) as IBoardWithLists;
 
 
@@ -77,6 +79,8 @@ export class BoardService {
   }
 
   public addBoardTask(boardId: string, listId: string, taskId: string) {
+    if ( !this.boards$.value.length ) return;
+
     const boardToChange = this.boards$.value.find((board) => board._id === boardId) as IBoardWithLists;
 
     const listToChange = boardToChange!.lists.find((list) => list._id === listId);
@@ -91,16 +95,21 @@ export class BoardService {
   }
 
   public changeTaskList(boardId: string, oldListId: string, newListId: string, taskId: string) {
+    if ( !this.boards$.value.length ) return;
+
+
     const boardToChange = this.boards$.value.find((board) => board._id === boardId ) as IBoardWithLists;
 
     const oldList = boardToChange.lists.find((list) => list._id === oldListId) as IBoardList;
     const newList = boardToChange.lists.find((list) => list._id === newListId) as IBoardList;
 
     oldList!.tasks = oldList!.tasks.filter((listTaskId) => listTaskId !== taskId);
+
     newList!.tasks.push(taskId);
 
     boardToChange.lists = boardToChange.lists.map((list) => list._id === oldListId ? { ...oldList } : {...list });
     boardToChange.lists = boardToChange.lists.map((list) => list._id === newListId ? { ...newList } : {...list });
+
 
     this.boards$.next(
       this.boards$.value.map((board) => board._id === boardId ? { ...boardToChange } : { ...board })

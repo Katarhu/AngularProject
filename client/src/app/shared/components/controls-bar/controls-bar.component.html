@@ -10,6 +10,22 @@
     >
   </div>
 
+
+
+  <div
+    *ngIf="addFilterType"
+    class="controls__dropdown">
+    <select
+      (change)="submitFilterByChanges()"
+      class="controls__select"
+      name="filter"
+      [(ngModel)]="filterBy"
+    >
+      <option class="controls__option" value="board" selected>Filter by board name</option>
+      <option class="controls__option" value="task">Filter by task name</option>
+    </select>
+  </div>
+
   <div class="controls__dropdown">
     <select
       (change)="submitSortByChanges()"

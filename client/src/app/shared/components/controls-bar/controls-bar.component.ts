@@ -1,6 +1,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import {ControlsBarService} from "../../../services/controls-bar.service";
-import {SortBy, SortType} from "../../types/sort.types";
+import {FilterBy, SortBy, SortType} from "../../types/sort.types";
 
 @Component({
   selector: 'app-controls-bar',
@@ -10,8 +10,10 @@ import {SortBy, SortType} from "../../types/sort.types";
 export class ControlsBarComponent implements OnInit, OnDestroy {
 
   @Input() title: string = '';
+  @Input() addFilterType: boolean = false;
 
   filterWord: string = '';
+  filterBy: FilterBy = 'board'
   sortBy: SortBy = 'name';
   sortType: SortType = 'ASC';
 
@@ -21,6 +23,10 @@ export class ControlsBarComponent implements OnInit, OnDestroy {
 
   submitFilterChanges() {
     this.controlsBarService.filterWord = this.filterWord;
+  }
+
+  submitFilterByChanges() {
+    this.controlsBarService.filterBy = this.filterBy;
   }
 
   submitSortByChanges() {

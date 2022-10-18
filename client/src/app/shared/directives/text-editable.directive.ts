@@ -12,13 +12,15 @@ export class TextEditableDirective implements AfterViewInit {
 
   @HostListener('focus')
   onFocus() {
-    this.$el.nativeElement.classList.add('focused')
+    this.$el.nativeElement.classList.add('focused');
+    this.$el.nativeElement.focus();
     this.previousInputValue = this.$el.nativeElement.textContent;
   }
 
   @HostListener('blur')
   onBlur() {
     this.$el.nativeElement.classList.remove('focused');
+    this.$el.nativeElement.blur();
     this.commitChanges();
   }
 

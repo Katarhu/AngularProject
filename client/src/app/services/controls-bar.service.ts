@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import {BehaviorSubject} from "rxjs";
-import {IFilterState, SortBy, SortType} from "../shared/types/sort.types";
+import {FilterBy, IFilterState, SortBy, SortType} from "../shared/types/sort.types";
 
 
 const defaultState: IFilterState = {
   filterWord: '',
+  filterBy: 'board',
   sortBy: 'name',
   sortType: 'ASC',
 }
@@ -25,6 +26,12 @@ export class ControlsBarService {
     })
   }
 
+  set filterBy(filterBy: FilterBy) {
+    this.filterState$.next({
+      ...this.filterState$.value, filterBy
+    })
+  }
+
   set sortBy( sortBy: SortBy ) {
     this.filterState$.next({
       ...this.filterState$.value, sortBy
@@ -39,6 +46,10 @@ export class ControlsBarService {
 
   get filterWord() {
     return this.filterState$.value.filterWord;
+  }
+
+  get filterBy() {
+    return this.filterState$.value.filterBy;
   }
 
   get sortBy() {

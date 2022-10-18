@@ -5,11 +5,17 @@
   (closeModalEvent)="closeModal()"
 ></app-task-modal>
 
-<div class="list" *ngIf="list">
+<div
+  *ngIf="list"
+  class="list"
+>
   <div class="list__title">
     {{list.name}}
   </div>
-  <div class="list__container">
+  <div
+    class="list__container"
+    #$list
+  >
     <button class="list__button"
       (click)="openModal()"
     >

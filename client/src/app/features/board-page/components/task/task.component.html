@@ -1,15 +1,25 @@
 <div
   class="task" *ngIf="task"
   #draggable
-  draggable="true"
+  draggable="false"
 >
   <div
     class="task__name"
     appTextEditable [maxLength]="18"
     (commitChangesEvent)="changeTaskName($event)"
+    #name
   >
     {{task.name}}
   </div>
+
+<!--  <input-->
+<!--    class="task__name"-->
+<!--    [value]="task.name"-->
+<!--    #name-->
+<!--    (click)="inputClick($event)"-->
+<!--    disabled-->
+<!--  >-->
+
   <div class="task__controls">
     <button class="task__icon">
       <span></span>

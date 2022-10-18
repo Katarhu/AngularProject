@@ -7,7 +7,7 @@ import {animationFrameScheduler, BehaviorSubject, fromEvent, map, subscribeOn, s
 export class DragNDropService {
 
   draggedTaskId = '';
-  draggedListId = '';
+  dragOver$ = new BehaviorSubject('');
 
   constructor() { }
 
@@ -15,16 +15,10 @@ export class DragNDropService {
     this.draggedTaskId = _id;
   }
 
-  setDraggedListId(_id: string) {
-    this.draggedListId  = _id;
-  }
-
   dragResult() {
-    const isSuccess = this.draggedTaskId && this.draggedListId;
-    this.draggedListId = '';
+    this.dragOver$.next(this.draggedTaskId);
     this.draggedTaskId = '';
-
-    return isSuccess;
+    this.dragOver$.next('');
   }
 
 }
