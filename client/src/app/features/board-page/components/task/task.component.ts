@@ -1,71 +1,59 @@
-import {
-  AfterViewInit,
-  Component, ElementRef,
-  HostListener,
-  Input,
-  OnInit, ViewChild,
-} from '@angular/core';
-import {ITask} from "../../../../shared/types/tasks.types";
-import {TaskService} from "../../services/task.service";
+import {AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild,} from '@angular/core';
+import {archiveTask, deleteTask, editTask} from "../../../../store/tasks/tasks.actions";
 import {DragNDropService} from "../../../../services/drag-n-drop.service";
-import {fromEvent, switchMap, take, takeUntil, tap} from "rxjs";
+import {ITask} from "../../../../shared/models/task.model";
+import {fromEvent, switchMap, takeUntil, tap} from "rxjs";
+import {IAppStore} from "../../../../store/app.store";
+import {Store} from "@ngrx/store";
 
 @Component({
   selector: 'app-task',
   templateUrl: './task.component.html',
   styleUrls: ['./task.component.scss']
 })
-export class TaskComponent implements OnInit, AfterViewInit  {
-
-  // @HostListener('drag', ['$event'])
-  // onDrag(event: DragEvent) {
-  //   event.preventDefault();
-  //   (event.target as HTMLElement).classList.add('dragged')
-  //   this.dndService.setDraggedTaskId(this.task!._id)
-  // }
-  //
-  // @HostListener('dragend', ['$event'])
-  // onDragEnd(event: DragEvent) {
-  //   event.preventDefault();
-  //
-  //   const dragToList = this.dndService.dragResult();
-  //
-  //   if( dragToList ) {
-  //     return this.taskService.changeTaskList(this.task!._id, dragToList);
-  //   }
-  //   (event.target as HTMLElement).classList.remove('dragged')
-  // }
+export class TaskComponent implements OnInit, AfterViewInit {
 
   @ViewChild('draggable') draggableChild!: ElementRef<HTMLElement>;
+  @ViewChild('name') nameInput!: ElementRef<HTMLInputElement>;
+  @Input() task?: ITask;
+  @Input() isDoneList?: boolean;
+
+
+  constructor(
+    private dndService: DragNDropService,
+    private store: Store<IAppStore>
+  ) {
+  }
+
   get $draggable() {
     return this.draggableChild.nativeElement;
   }
 
-  @ViewChild('name') nameInput!: ElementRef<HTMLInputElement>;
   get $nameInput() {
     return this.nameInput.nativeElement;
   }
 
-  isInputFocused() {
-    return this.$nameInput === document.activeElement;
+  ngOnInit(): void {
   }
 
-  @Input() task?: ITask;
+  deleteTask() {
+    this.store.dispatch(deleteTask({_id: this.task!._id}));
+  }
 
+  archiveTask() {
+    this.store.dispatch(archiveTask({_id: this.task!._id}));
+    console.log('hello')
+  }
 
-  constructor(
-    private taskService: TaskService,
-    private dndService: DragNDropService
-  ) { }
-
-  ngOnInit(): void {
+  changeTaskName(name: string) {
+    this.store.dispatch(editTask({_id: this.task!._id, name}))
   }
 
   ngAfterViewInit() {
 
     const mouseDown$ = fromEvent<MouseEvent>(this.$draggable, 'mousedown')
       .pipe(
-        tap(() =>  this.dndService.setDraggedTaskId(this.task!._id))
+        tap(() => this.dndService.setDraggedTaskId(this.task!._id))
       );
 
     const mouseUp$ = fromEvent<MouseEvent>(document, 'mouseup')
@@ -85,26 +73,12 @@ export class TaskComponent implements OnInit, AfterViewInit  {
       switchMap((start) => mouseMove$.pipe(
         tap((event) => {
           this.$draggable.classList.add('dragged');
-          this.$draggable.style.left =  event.pageX - start.offsetX  + 'px';
-          this.$draggable.style.top =  event.pageY - start.offsetY + 'px';
+          this.$draggable.style.left = event.clientX - Math.abs(start.offsetX) + 'px';
+          this.$draggable.style.top = event.clientY - Math.abs(start.offsetY) + 'px';
         }),
         takeUntil(mouseUp$)
       )),
     ).subscribe();
   }
-
-  deleteTask() {
-    this.taskService.deleteTask(this.task!._id);
-  }
-
-  focusInput() {
-    this.$nameInput.disabled = false;
-    this.$nameInput.focus();
-  }
-
-  changeTaskName(name: string) {
-    this.taskService.editTask(this.task!._id, name);
-  }
-
 }
 

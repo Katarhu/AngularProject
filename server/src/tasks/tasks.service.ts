@@ -1,11 +1,10 @@
-import {forwardRef, HttpException, HttpStatus, Injectable} from '@nestjs/common';
+import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
 import {InjectModel} from "@nestjs/mongoose";
 import {Model} from "mongoose";
 import {ITask} from "./tasks.model";
 import {CreateTaskDto} from "./dto/create-task.dto";
 import {ChangeTaskList, ChangeTaskName} from "./dto/change-task.dto";
 import {IList} from "../lists/lists.model";
-import {BoardsModule} from "../boards/boards.module";
 
 @Injectable()
 export class TasksService {
@@ -17,26 +16,27 @@ export class TasksService {
     }
 
     async getTasks(req) {
-        const { boardId } = req.query;
+        const {boardId} = req.query;
 
-        if( !boardId ) {
-            throw new HttpException('There is no boardId in query params', HttpStatus.BAD_REQUEST);
+        if (!boardId) {
+            const tasks = await this.taskModel.find({userId: req.user._id});
+
+            return tasks;
         }
 
-
-        const tasks = await this.taskModel.find({ boardId })
+        const tasks = await this.taskModel.find({boardId})
 
         return tasks;
     }
 
     async createTask(req, taskDto: CreateTaskDto) {
-        if( !taskDto.name || !taskDto.listId || !taskDto.boardId ) {
+        if (!taskDto.name || !taskDto.listId || !taskDto.boardId) {
             throw new HttpException('Not all fields were provided', HttpStatus.BAD_REQUEST)
         }
 
         const isList = await this.listModel.findById(taskDto.listId);
 
-        if( !isList ) {
+        if (!isList) {
             throw new HttpException('There is no list with such id', HttpStatus.BAD_REQUEST)
         }
 
@@ -58,21 +58,21 @@ export class TasksService {
 
     async renameTask(req, taskDto: ChangeTaskName) {
 
-        if( !taskDto.name ) {
+        if (!taskDto.name) {
             throw new HttpException('Not all parameters were provided', HttpStatus.BAD_REQUEST)
         }
 
         const task = await this.taskModel.findById(req.params.id);
 
-        if( !task ) {
+        if (!task) {
             throw new HttpException('There is no task with such id', HttpStatus.BAD_REQUEST)
         }
 
-        if( task.userId !== req.user._id ) {
+        if (task.userId !== req.user._id) {
             throw new HttpException('This operation is forbidden', HttpStatus.FORBIDDEN)
         }
 
-        await this.taskModel.findByIdAndUpdate(req.params.id, { name: taskDto.name ?? task.name });
+        await this.taskModel.findByIdAndUpdate(req.params.id, {name: taskDto.name ?? task.name});
 
         return {
             message: "Task name was changed successfully"
@@ -82,23 +82,26 @@ export class TasksService {
     async changeTaskList(req, taskDto: ChangeTaskList) {
         const task = await this.taskModel.findById(req.params.id);
 
-        if( !task ) {
+        if (!task) {
             throw new HttpException('There is no task with such id', HttpStatus.BAD_REQUEST)
         }
 
-        if( task.userId !== req.user._id ) {
+        if (task.userId !== req.user._id) {
             throw new HttpException('This operation is forbidden', HttpStatus.FORBIDDEN)
         }
 
         const changeList = await this.listModel.findById(taskDto.listId);
 
-        if( !changeList ) {
+        if (!changeList) {
             throw new HttpException('There is no list with such id', HttpStatus.BAD_REQUEST)
         }
 
         const oldList = await this.listModel.findById(task.listId);
-        oldList.tasks = oldList.tasks.filter((listTask) => !listTask._id.equals(task._id));
-        await oldList.save();
+
+        if (oldList) {
+            oldList.tasks = oldList.tasks.filter((listTask) => !listTask._id.equals(task._id));
+            await oldList.save();
+        }
 
         changeList.tasks.push(task._id);
         await changeList.save();
@@ -111,14 +114,36 @@ export class TasksService {
         }
     }
 
-    async deleteTask(req) {
+    async archiveTask(req) {
         const task = await this.taskModel.findById(req.params.id);
 
-        if( !task ) {
+        if (!task) {
             throw new HttpException('There is no task with such id', HttpStatus.BAD_REQUEST)
         }
 
-        if( task.userId !== req.user._id ) {
+        if (task.userId !== req.user._id) {
+            throw new HttpException('This operation is forbidden', HttpStatus.FORBIDDEN)
+        }
+
+        const oldList = await this.listModel.findById(task.listId);
+        oldList.tasks = oldList.tasks.filter((listTask) => !listTask._id.equals(task._id));
+        await oldList.save();
+
+        await this.taskModel.findByIdAndUpdate(req.params.id, {listId: null});
+
+        return {
+            message: "Task was archived successfully"
+        }
+    }
+
+    async deleteTask(req) {
+        const task = await this.taskModel.findById(req.params.id);
+
+        if (!task) {
+            throw new HttpException('There is no task with such id', HttpStatus.BAD_REQUEST)
+        }
+
+        if (task.userId !== req.user._id) {
             throw new HttpException('This operation is forbidden', HttpStatus.FORBIDDEN)
         }
 
@@ -135,6 +160,6 @@ export class TasksService {
     }
 
     async deleteAllTasks(boardId: string) {
-        await this.taskModel.deleteMany({ boardId });
+        await this.taskModel.deleteMany({boardId});
     }
 }

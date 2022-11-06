@@ -1,11 +1,11 @@
 <div class="board-page">
   <div class="container board-page__container">
     <app-controls-bar
-      [title]="title || 'Board'"
+      [title]="(title$ | async) ?? 'Board'"
     ></app-controls-bar>
 
     <div
-      *ngIf="listService.getLists() | async as lists"
+      *ngIf="lists$ | async as lists"
       class="board-page__lists">
 
       <app-list

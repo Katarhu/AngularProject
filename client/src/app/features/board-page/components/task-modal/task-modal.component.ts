@@ -1,6 +1,8 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {TaskService} from "../../services/task.service";
+import {createTask} from "../../../../store/tasks/tasks.actions";
+import {IAppStore} from "../../../../store/app.store";
+import {Store} from "@ngrx/store";
 
 @Component({
   selector: 'app-task-modal',
@@ -18,8 +20,13 @@ export class TaskModalComponent implements OnInit {
   })
 
   constructor(
-    private taskService: TaskService
-  ) { }
+    private store: Store<IAppStore>
+  ) {
+  }
+
+  get nameError() {
+    return this.modalForm.controls.name.errors;
+  }
 
   ngOnInit(): void {
   }
@@ -33,17 +40,14 @@ export class TaskModalComponent implements OnInit {
   }
 
   submitForm() {
-    if( this.modalForm.valid ) {
-      this.taskService.createTask({
-        name: this.modalForm.controls.name.value as string,
-        listId: this.listId,
-        boardId: this.boardId
-      })
-    }
-    this.closeModal();
-  }
+    if (this.modalForm.valid) {
+      const name = this.modalForm.controls.name.value as string;
+      const listId = this.listId;
+      const boardId = this.boardId;
 
-  get nameError() {
-    return this.modalForm.controls.name.errors;
+      this.store.dispatch(createTask({name, listId, boardId}));
+    }
+
+    this.closeModal();
   }
 }

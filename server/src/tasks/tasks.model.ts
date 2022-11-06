@@ -1,19 +1,19 @@
-import mongoose, {Types} from "mongoose";
+import mongoose from "mongoose";
 
 
 export const TaskSchema = new mongoose.Schema({
-    userId: { type: String, required: true },
-    listId: { type: String, required: true },
-    boardId: { type: String, required: true},
-    name: { type: String, required: true},
-},
-    { timestamps: true }
+        userId: {type: String, required: true},
+        listId: {type: String, default: null},
+        boardId: {type: String, required: true},
+        name: {type: String, required: true},
+    },
+    {timestamps: true}
 )
 
 export interface ITask {
-    userId: Types.ObjectId
-    listId: Types.ObjectId
-    boardId: Types.ObjectId
+    userId: string
+    listId: string | null;
+    boardId: string
     name: string;
     createdAt: string;
 }

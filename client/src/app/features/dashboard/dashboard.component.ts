@@ -1,25 +1,33 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {BoardService} from "./services/board.service";
-import {SortBy} from "../../shared/types/sort.types";
 import {ControlsBarService} from "../../services/controls-bar.service";
-import {TaskService} from "../board-page/services/task.service";
+import {selectBoards} from "../../store/boards/board.selectors";
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {IBoard} from "../../shared/models/board.model";
+import {IAppStore} from "../../store/app.store";
+import {select, Store} from "@ngrx/store";
+import {Observable} from "rxjs";
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
 
   isAddBoard = false;
+  boards$!: Observable<IBoard[]>;
 
   constructor(
-    public boardService: BoardService,
     public controlsBarService: ControlsBarService,
-  ) { }
+    private store: Store<IAppStore>
+  ) {
+  }
 
   ngOnInit(): void {
-    this.boardService.init();
+    this.boards$ = this.store.pipe(select(selectBoards));
+  }
+
+  ngOnDestroy() {
+    this.controlsBarService.clear();
   }
 
   openModal() {

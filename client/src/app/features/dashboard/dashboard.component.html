@@ -1,17 +1,20 @@
 <div class="dashboard">
   <app-board-modal
-    *ngIf="isAddBoard"
     (closeModalEvent)="closeModal()"
+    *ngIf="isAddBoard"
   ></app-board-modal>
 
   <div class="container dashboard__container">
     <app-controls-bar
-      [title]="'Dashboard'"
       [addFilterType]="true"
+      [title]="'Dashboard'"
     ></app-controls-bar>
 
     <div
-      *ngIf="boardService.getBoards() | async | filterName: controlsBarService.filterWord | sort: controlsBarService.sortBy : controlsBarService.sortType as boards"
+      *ngIf="boards$
+                    | filterBoard : controlsBarService.filterWord : controlsBarService.filterBy
+                    | sortBoards: controlsBarService.sortBy: controlsBarService.sortType
+                    | async as boards"
       class="dashboard__boards"
     >
       <app-board-button

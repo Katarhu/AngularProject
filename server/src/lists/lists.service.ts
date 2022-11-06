@@ -3,7 +3,7 @@ import {InjectModel} from "@nestjs/mongoose";
 import {Model} from "mongoose";
 import {IList} from "./lists.model";
 import {CreateListDto} from "./dto/create-list.dto";
-import {UpdateListDto} from "./dto/update-list.dto";
+import {UpdateListColorDto, UpdateListDto} from "./dto/update-list.dto";
 import {TasksService} from "../tasks/tasks.service";
 import {IBoard} from "../boards/boards.model";
 
@@ -18,37 +18,34 @@ export class ListsService {
 
     async getLists(req) {
 
-        const { boardId } = req.query;
+        const {boardId} = req.query;
 
-        if( !boardId ) {
-            throw new HttpException('There is no boardId in query params', HttpStatus.BAD_REQUEST);
-        }
 
         const board = await this.boardModel.findById(boardId);
 
-        if( !board ) {
-            throw new HttpException('There is no board with such id', HttpStatus.BAD_REQUEST);
+
+        if (!boardId) {
+            const lists = await this.listModel.find({userId: req.user._id});
+
+            return lists;
         }
 
-        const lists = await this.listModel.find({ boardId })
+        const lists = await this.listModel.find({boardId})
             .populate('tasks');
 
-        return {
-            lists,
-            boardName: board.name,
-        }
+        return lists;
     }
 
 
     async createList(req, listDto: CreateListDto) {
 
-        if( !listDto.name || !listDto.boardId ) {
+        if (!listDto.name || !listDto.boardId) {
             throw new HttpException('Not all parameters were provided', HttpStatus.BAD_REQUEST);
         }
 
         const isBoard = await this.boardModel.findById(listDto.boardId);
 
-        if( !isBoard ) {
+        if (!isBoard) {
             throw new HttpException('There is no board with such id', HttpStatus.BAD_REQUEST);
         }
 
@@ -63,37 +60,60 @@ export class ListsService {
         return newList;
     }
 
-    async renameList(req, listDto: UpdateListDto ) {
+    async renameList(req, listDto: UpdateListDto) {
 
-        if( !listDto.name ) {
+        if (!listDto.name) {
             throw new HttpException('Name wasn\'t provided', HttpStatus.BAD_REQUEST);
         }
 
         const list = await this.listModel.findById(req.params.id);
 
-        if( !list ) {
+        if (!list) {
             throw new HttpException('There is no list with such id', HttpStatus.BAD_REQUEST);
         }
 
-        if( list.userId !== req.user._id ) {
+        if (list.userId !== req.user._id) {
             throw new HttpException('This operation is forbidden', HttpStatus.FORBIDDEN);
         }
 
-        await this.listModel.findByIdAndUpdate(req.params.id, { name: listDto.name });
+        await this.listModel.findByIdAndUpdate(req.params.id, {name: listDto.name});
 
         return {
             message: "List name was successfully updated"
         }
     }
 
-    async deleteList(req) {
+    async changeListColor(req, listDto: UpdateListColorDto) {
+        if (!listDto.color) {
+            throw new HttpException('Color wasn\'t provided', HttpStatus.BAD_REQUEST);
+        }
+
         const list = await this.listModel.findById(req.params.id);
 
-        if( !list ) {
+        if (!list) {
             throw new HttpException('There is no list with such id', HttpStatus.BAD_REQUEST);
         }
 
-        if( list.userId !== req.user._id ) {
+        if (list.userId !== req.user._id) {
+            throw new HttpException('This operation is forbidden', HttpStatus.FORBIDDEN);
+        }
+
+        list.color = listDto.color;
+        await list.save();
+
+        return {
+            message: 'List color was changed successfully'
+        }
+    }
+
+    async deleteList(req) {
+        const list = await this.listModel.findById(req.params.id);
+
+        if (!list) {
+            throw new HttpException('There is no list with such id', HttpStatus.BAD_REQUEST);
+        }
+
+        if (list.userId !== req.user._id) {
             throw new HttpException('This operation is forbidden', HttpStatus.FORBIDDEN);
         }
 
@@ -106,7 +126,7 @@ export class ListsService {
     }
 
     async deleteAllLists(boardId: string) {
-        await this.listModel.deleteMany({ boardId });
+        await this.listModel.deleteMany({boardId});
         await this.tasksService.deleteAllTasks(boardId);
     }
 }

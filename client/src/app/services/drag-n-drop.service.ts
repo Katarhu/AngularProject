@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import {animationFrameScheduler, BehaviorSubject, fromEvent, map, subscribeOn, switchMap, takeUntil, tap} from "rxjs";
+import {Injectable} from '@angular/core';
+import {BehaviorSubject} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +9,8 @@ export class DragNDropService {
   draggedTaskId = '';
   dragOver$ = new BehaviorSubject('');
 
-  constructor() { }
+  constructor() {
+  }
 
   setDraggedTaskId(_id: string) {
     this.draggedTaskId = _id;

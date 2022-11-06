@@ -1,36 +1,29 @@
-import { Injectable } from '@angular/core';
-import {BehaviorSubject, map, Observable, tap} from "rxjs";
-import {IList, IListResponse, IListWithTasks} from "../../../shared/types/list.types";
+import {IList} from "../../../shared/models/list.model";
 import {HttpClient} from "@angular/common/http";
+import {Injectable} from '@angular/core';
+import {Observable} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
 })
 export class ListService {
 
-  lists$ = new BehaviorSubject<IListWithTasks[]>([])
-
   constructor(
     private http: HttpClient
-  ) { }
-
-
-  init(boardId: string): Observable<string | undefined> {
-    return this.http.get<IListResponse>(`lists?boardId=${boardId}`)
-      .pipe(
-        tap((value) => {
-          const { lists } = value;
-          this.lists$.next(lists);
-        }),
-        map((value) => value.boardName)
-      )
+  ) {
   }
 
-  getLists() {
-    return this.lists$;
+
+  init(boardId?: string): Observable<IList[]> {
+
+    if (boardId) {
+      return this.http.get<IList[]>(`lists?boardId=${boardId}`)
+    }
+
+    return this.http.get<IList[]>(`lists`)
   }
 
-  clear() {
-    this.lists$.next([]);
+  changeListColor({color, _id}: { color: string, _id: string }) {
+    return this.http.patch(`lists/${_id}`, {color});
   }
 }

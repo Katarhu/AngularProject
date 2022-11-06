@@ -1,10 +1,10 @@
-import {Body, Controller, Delete, Get, Post, Put, Req, UseGuards} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Patch, Post, Put, Req, UseGuards} from '@nestjs/common';
 import {ListsService} from "./lists.service";
 import {JwtAuthGuard} from "../auth/jwt-auth.guard";
 import {CreateListDto} from "./dto/create-list.dto";
 import {ApiBearerAuth, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
 import {ListResponse, Response} from "../types/types";
-import {UpdateListDto} from "./dto/update-list.dto";
+import {UpdateListColorDto, UpdateListDto} from "./dto/update-list.dto";
 
 @ApiTags('Lists')
 @Controller('lists')
@@ -17,42 +17,55 @@ export class ListsController {
 
     @UseGuards(JwtAuthGuard)
     @Get()
-    getLists(@Req() request ) {
+    getLists(@Req() request) {
         return this.listsService.getLists(request);
     }
 
-    @ApiOperation({ summary: 'Create new list'})
+    @ApiOperation({summary: 'Create new list'})
     @ApiBearerAuth()
-    @ApiResponse({ status: 200, type: ListResponse})
-    @ApiResponse({ status: 400, type: Response, description: 'Not all parameters were provided'})
-    @ApiResponse({ status: 401, type: Response, description: 'Not authorized'})
-    @ApiResponse({ status: 404, type: Response, description: 'Board wasn\'t found'})
-    @ApiResponse({ status: 500, type: Response, description: 'Server error'})
+    @ApiResponse({status: 200, type: ListResponse})
+    @ApiResponse({status: 400, type: Response, description: 'Not all parameters were provided'})
+    @ApiResponse({status: 401, type: Response, description: 'Not authorized'})
+    @ApiResponse({status: 404, type: Response, description: 'Board wasn\'t found'})
+    @ApiResponse({status: 500, type: Response, description: 'Server error'})
     @UseGuards(JwtAuthGuard)
     @Post()
     create(@Req() request, @Body() listDto: CreateListDto) {
         return this.listsService.createList(request, listDto);
     }
 
-    @ApiOperation({ summary: 'Update list name'})
+    @ApiOperation({summary: 'Update list name'})
     @ApiBearerAuth()
-    @ApiResponse({ status: 200, type: Response})
-    @ApiResponse({ status: 400, type: Response, description: 'Not all parameters were provided'})
-    @ApiResponse({ status: 401, type: Response, description: 'Not authorized'})
-    @ApiResponse({ status: 404, type: Response, description: 'List wasn\'t found'})
-    @ApiResponse({ status: 500, type: Response, description: 'Server error'})
+    @ApiResponse({status: 200, type: Response})
+    @ApiResponse({status: 400, type: Response, description: 'Not all parameters were provided'})
+    @ApiResponse({status: 401, type: Response, description: 'Not authorized'})
+    @ApiResponse({status: 404, type: Response, description: 'List wasn\'t found'})
+    @ApiResponse({status: 500, type: Response, description: 'Server error'})
     @UseGuards(JwtAuthGuard)
     @Put('/:id')
     update(@Req() request, @Body() listDto: UpdateListDto) {
         return this.listsService.renameList(request, listDto);
     }
 
-    @ApiOperation({ summary: 'Delete list'})
+    @ApiOperation({summary: 'Change list color'})
     @ApiBearerAuth()
-    @ApiResponse({ status: 200, type: Response})
-    @ApiResponse({ status: 401, type: Response, description: 'Not authorized'})
-    @ApiResponse({ status: 404, type: Response, description: 'List wasn\'t found'})
-    @ApiResponse({ status: 500, type: Response, description: 'Server error'})
+    @ApiResponse({status: 200, type: Response})
+    @ApiResponse({status: 400, type: Response, description: 'Not all parameters were provided'})
+    @ApiResponse({status: 401, type: Response, description: 'Not authorized'})
+    @ApiResponse({status: 404, type: Response, description: 'List wasn\'t found'})
+    @ApiResponse({status: 500, type: Response, description: 'Server error'})
+    @UseGuards(JwtAuthGuard)
+    @Patch('/:id')
+    changeListColor(@Req() request, @Body() listDto: UpdateListColorDto) {
+        return this.listsService.changeListColor(request, listDto);
+    }
+
+    @ApiOperation({summary: 'Delete list'})
+    @ApiBearerAuth()
+    @ApiResponse({status: 200, type: Response})
+    @ApiResponse({status: 401, type: Response, description: 'Not authorized'})
+    @ApiResponse({status: 404, type: Response, description: 'List wasn\'t found'})
+    @ApiResponse({status: 500, type: Response, description: 'Server error'})
     @UseGuards(JwtAuthGuard)
     @Delete('/:id')
     delete(@Req() request) {

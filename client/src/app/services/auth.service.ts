@@ -1,9 +1,13 @@
-import { Injectable } from '@angular/core';
-import {HttpClient} from "@angular/common/http";
 import {IAuthResponse, IUser, IUserAuth} from "../shared/types/auth.types";
+import {clearBoardState, getBoards} from "../store/boards/board.actions";
+import {clearListsState, getLists} from "../store/lists/lists.actions";
+import {clearTaskState, getTasks} from "../store/tasks/tasks.actions";
 import {CookieService} from "ngx-cookie-service";
+import {HttpClient} from "@angular/common/http";
+import {IAppStore} from "../store/app.store";
+import {Injectable} from '@angular/core';
 import {Router} from "@angular/router";
-import {BoardService} from "../features/dashboard/services/board.service";
+import {Store} from "@ngrx/store";
 
 const initialUserState: IUser = {
   _id: '',
@@ -21,8 +25,13 @@ export class AuthService {
     private http: HttpClient,
     private cookieService: CookieService,
     private router: Router,
-    private boardService: BoardService
-  ) { }
+    private store: Store<IAppStore>
+  ) {
+  }
+
+  get isLogged() {
+    return this.getToken();
+  }
 
   getToken() {
     return this.cookieService.get('token');
@@ -36,20 +45,22 @@ export class AuthService {
     this.cookieService.delete('token');
   }
 
-  registerUser( userCredentials: IUserAuth ) {
+  registerUser(userCredentials: IUserAuth) {
     this.http.post<IAuthResponse>('auth/register', userCredentials)
-      .subscribe((response ) => {
-        this.setToken( response.token );
+      .subscribe((response) => {
+        this.setToken(response.token);
         this.user = response.user;
+        this.initStore();
         this.router.navigate(['/dashboard']);
       });
   }
 
-  loginUser( userCredentials: IUserAuth ) {
+  loginUser(userCredentials: IUserAuth) {
     this.http.post<IAuthResponse>('auth/login', userCredentials)
       .subscribe((response) => {
         this.setToken(response.token);
         this.user = response.user;
+        this.initStore();
         this.router.navigate(['/dashboard']);
       })
   }
@@ -58,6 +69,7 @@ export class AuthService {
     this.http.get<IAuthResponse>('auth')
       .subscribe((response) => {
         this.user = response.user;
+        this.initStore();
       })
   }
 
@@ -65,12 +77,20 @@ export class AuthService {
     this.deleteToken();
     this.user = initialUserState;
 
-    this.boardService.clear();
+    this.clearStore();
 
     this.router.navigate(['/'])
   }
 
-  get isLogged() {
-    return this.getToken();
+  initStore() {
+    this.store.dispatch(getBoards());
+    this.store.dispatch(getLists({}));
+    this.store.dispatch(getTasks());
+  }
+
+  clearStore() {
+    this.store.dispatch(clearBoardState());
+    this.store.dispatch(clearListsState());
+    this.store.dispatch(clearTaskState());
   }
 }

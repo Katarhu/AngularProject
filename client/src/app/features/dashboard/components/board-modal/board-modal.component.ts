@@ -1,6 +1,10 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {BoardService} from "../../services/board.service";
+import {Store} from "@ngrx/store";
+import {IAppStore} from "../../../../store/app.store";
+import {addBoard} from "../../../../store/boards/board.actions";
+import {ICreateBoard} from "../../../../shared/models/board.model";
 
 @Component({
   selector: 'app-board-modal',
@@ -17,7 +21,8 @@ export class BoardModalComponent implements OnInit {
   })
 
   constructor(
-    private boardService: BoardService
+    private boardService: BoardService,
+    private store: Store<IAppStore>
   ) {
   }
 
@@ -29,10 +34,11 @@ export class BoardModalComponent implements OnInit {
   }
 
   submitForm() {
-    this.boardService.createBoard({
-      name: this.modalForm.controls.name.value as string,
-      description: this.modalForm.controls.description.value as string,
-    });
+
+    const name = this.modalForm.controls.name.value as string;
+    const description = this.modalForm.controls.description.value as string;
+
+    this.store.dispatch(addBoard({ name, description }))
 
     this.closeModal();
   }

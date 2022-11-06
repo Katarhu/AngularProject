@@ -1,34 +1,42 @@
 <div
-  class="task" *ngIf="task"
-  #draggable
+  #draggable *ngIf="task"
+  class="task"
   draggable="false"
 >
   <div
-    class="task__name"
-    appTextEditable [maxLength]="18"
-    (commitChangesEvent)="changeTaskName($event)"
     #name
+    (commitChangesEvent)="changeTaskName($event)" [maxLength]="18"
+    appTextEditable
+    class="task__name"
   >
     {{task.name}}
   </div>
 
-<!--  <input-->
-<!--    class="task__name"-->
-<!--    [value]="task.name"-->
-<!--    #name-->
-<!--    (click)="inputClick($event)"-->
-<!--    disabled-->
-<!--  >-->
+  <!--  <input-->
+  <!--    class="task__name"-->
+  <!--    [value]="task.name"-->
+  <!--    #name-->
+  <!--    (click)="inputClick($event)"-->
+  <!--    disabled-->
+  <!--  >-->
 
   <div class="task__controls">
     <button class="task__icon">
       <span></span>
     </button>
     <div class="task__buttons">
-      <button class="task__button"
-              (click)="deleteTask()"
+      <button (click)="deleteTask()"
+              class="task__button"
       >
         Delete
+      </button>
+
+      <button
+        (click)="archiveTask()"
+        *ngIf="isDoneList"
+        class="task__button"
+      >
+        Archive
       </button>
     </div>
   </div>
