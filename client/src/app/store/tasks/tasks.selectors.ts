@@ -18,3 +18,7 @@ export const filterTasksByFilter = (filter: string) =>
       }, [])
     )]
   )
+
+
+export const selectArchivedTasks = (boardId: string) =>
+  createSelector(selectFeature, (state) => state.tasks.filter((task) => task.boardId === boardId && task.listId === null))

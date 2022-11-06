@@ -1,4 +1,13 @@
-import {AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  Input,
+  OnDestroy,
+  OnInit,
+  ViewChild
+} from '@angular/core';
 import {ControlsBarService} from "../../../../services/controls-bar.service";
 import {selectTasksByList} from "../../../../store/tasks/tasks.selectors";
 import {DragNDropService} from "../../../../services/drag-n-drop.service";
@@ -15,6 +24,7 @@ import {select, Store} from "@ngrx/store";
   selector: 'app-list',
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ListComponent implements OnInit, OnDestroy, AfterViewInit {
 

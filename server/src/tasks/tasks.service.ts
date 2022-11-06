@@ -147,10 +147,12 @@ export class TasksService {
             throw new HttpException('This operation is forbidden', HttpStatus.FORBIDDEN)
         }
 
-        const list = await this.listModel.findById(task.listId);
+        if (task.listId !== null) {
+            const list = await this.listModel.findById(task.listId);
 
-        list.tasks = list.tasks.filter(listTask => !listTask._id.equals(task._id));
-        await list.save();
+            list.tasks = list.tasks.filter(listTask => !listTask._id.equals(task._id));
+            await list.save();
+        }
 
         await this.taskModel.findByIdAndDelete(req.params.id);
 

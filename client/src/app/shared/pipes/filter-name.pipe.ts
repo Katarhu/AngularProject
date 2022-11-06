@@ -1,4 +1,4 @@
-import { Pipe, PipeTransform } from '@angular/core';
+import {Pipe, PipeTransform} from '@angular/core';
 
 interface x {
   name?: string;
@@ -10,11 +10,13 @@ interface x {
 })
 export class FilterNamePipe implements PipeTransform {
 
-  transform<T extends x>(value: T[] | null  = [] , filterWord: string = ''): T[]  {
-    if( value === null ) return [];
+  transform<T extends x>(value: T[] | null = [], filterWord: string = ''): T[] {
+    console.log(filterWord)
+    if (value === null) return [];
 
-    if( filterWord ) {
-      return value.filter((value) =>  value.name?.trim().toLowerCase().startsWith(filterWord.toLowerCase()))
+
+    if (filterWord) {
+      return value.filter((value) => value.name?.trim().toLowerCase().startsWith(filterWord.toLowerCase()))
     }
 
     return value;

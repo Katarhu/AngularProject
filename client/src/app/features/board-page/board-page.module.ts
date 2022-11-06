@@ -7,6 +7,7 @@ import {ControlsBarModule} from "../../shared/components/controls-bar/controls-b
 import {TaskModalModule} from "./components/task-modal/task-modal.module";
 import {DirectivesModule} from "../../shared/directives/directives.module";
 import {PipesModule} from "../../shared/pipes/pipes.module";
+import { ArchivedListComponent } from './components/archived-list/archived-list.component';
 
 
 
@@ -14,7 +15,8 @@ import {PipesModule} from "../../shared/pipes/pipes.module";
   declarations: [
     BoardPageComponent,
     ListComponent,
-    TaskComponent
+    TaskComponent,
+    ArchivedListComponent
   ],
   imports: [
     CommonModule,

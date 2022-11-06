@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild,} from '@angular/core';
+import {AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Input, OnInit, ViewChild,} from '@angular/core';
 import {archiveTask, deleteTask, editTask} from "../../../../store/tasks/tasks.actions";
 import {DragNDropService} from "../../../../services/drag-n-drop.service";
 import {ITask} from "../../../../shared/models/task.model";
@@ -9,12 +9,12 @@ import {Store} from "@ngrx/store";
 @Component({
   selector: 'app-task',
   templateUrl: './task.component.html',
-  styleUrls: ['./task.component.scss']
+  styleUrls: ['./task.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TaskComponent implements OnInit, AfterViewInit {
 
   @ViewChild('draggable') draggableChild!: ElementRef<HTMLElement>;
-  @ViewChild('name') nameInput!: ElementRef<HTMLInputElement>;
   @Input() task?: ITask;
   @Input() isDoneList?: boolean;
 
@@ -29,10 +29,6 @@ export class TaskComponent implements OnInit, AfterViewInit {
     return this.draggableChild.nativeElement;
   }
 
-  get $nameInput() {
-    return this.nameInput.nativeElement;
-  }
-
   ngOnInit(): void {
   }
 
@@ -42,7 +38,6 @@ export class TaskComponent implements OnInit, AfterViewInit {
 
   archiveTask() {
     this.store.dispatch(archiveTask({_id: this.task!._id}));
-    console.log('hello')
   }
 
   changeTaskName(name: string) {

@@ -4,16 +4,34 @@
       [title]="(title$ | async) ?? 'Board'"
     ></app-controls-bar>
 
+    <div>
+      {{controlsBarService.filterWord}}
+    </div>
+
     <div
+      #$boardLists
       *ngIf="lists$ | async as lists"
-      class="board-page__lists">
+      class="board-page__lists"
+    >
 
       <app-list
         *ngFor="let list of lists"
         [list]="list"
       ></app-list>
 
+
+      <app-archived-list
+        *ngIf="id"
+        [boardId]="id"
+      >
+
+      </app-archived-list>
+
     </div>
+  </div>
+
+  <div class="board__info">
+    Scroll to view archived tasks >>>
   </div>
 
 </div>

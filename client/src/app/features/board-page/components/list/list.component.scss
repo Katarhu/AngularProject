@@ -24,9 +24,9 @@
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
   padding: 12px 15px;
 
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+  //display: flex;
+  //flex-direction: column;
+
 }
 
 .list__button {
@@ -37,6 +37,8 @@
   line-height: 175%;
 
   background: #BEB3B3;
+
+  margin: 0 0 12px 0;
 }
 
 .list__head {
@@ -61,4 +63,10 @@
   &::-webkit-color-swatch {
     border: none;
   }
+}
+
+.list__tasks {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }

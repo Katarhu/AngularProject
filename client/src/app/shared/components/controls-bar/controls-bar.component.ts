@@ -1,11 +1,12 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {ControlsBarService} from "../../../services/controls-bar.service";
 import {FilterBy, SortBy, SortType} from "../../types/sort.types";
 
 @Component({
   selector: 'app-controls-bar',
   templateUrl: './controls-bar.component.html',
-  styleUrls: ['./controls-bar.component.scss']
+  styleUrls: ['./controls-bar.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ControlsBarComponent implements OnInit, OnDestroy {
 
